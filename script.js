@@ -24,13 +24,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const bpmText = Array.from(encabezado.querySelectorAll('p')).find(p => p.textContent.includes('BPM:'));
     const compasText = Array.from(encabezado.querySelectorAll('p')).find(p => p.textContent.includes('Compas:'));
 
-    const tono = tonoText ? tonoText.textContent.replace('Tono:', '').trim() : 'Sin tono';
-    const ritmo = ritmoText ? ritmoText.textContent.replace('Ritmo:', '').trim() : 'Sin ritmo';
+    const tono = tonoText ? tonoText.textContent.replace('Tono:', '').trim() : 'SinTono';
+    const ritmo = ritmoText ? ritmoText.textContent.replace('Ritmo:', '').trim() : 'SinRitmo';
     let bpm = bpmText ? bpmText.textContent.replace('BPM:', '').trim() : '';
     const compas = compasText ? compasText.textContent.replace('Compas:', '').trim() : '';
 
     bpm = bpm.padStart(3, '0');
-    const nombreFormateado = `[${bpm} BPM - ${compas}] ${nombre}`;
+    const nombreFormateado = `[${bpm}BPM-${compas}-${tono}] ${nombre}`;
 
     if (!grupos[ritmo]) grupos[ritmo] = {};
     if (!grupos[ritmo][tono]) grupos[ritmo][tono] = [];
@@ -45,10 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const tonosOrdenados = Object.keys(grupos[ritmo]).sort();
     tonosOrdenados.forEach(tono => {
-      const h4 = document.createElement('h4');
-      h4.textContent = tono;
-      indice.appendChild(h4);
-
       const ul = document.createElement('ul');
       grupos[ritmo][tono]
         .sort((a, b) => a.nombre.localeCompare(b.nombre))
@@ -100,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
       let siguiente = h3.nextElementSibling;
       let visibles = false;
       while (siguiente && siguiente.tagName !== 'H3') {
-        if (siguiente.tagName === 'H4' && siguiente.style.display !== 'none') {
+        if ((siguiente.tagName === 'H4' || siguiente.tagName === 'UL') && siguiente.style.display !== 'none') {
           visibles = true;
           break;
         }
@@ -152,7 +148,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Mostrar solo el índice al inicio
   canciones.forEach(cancion => {
     cancion.style.display = 'none';
   });

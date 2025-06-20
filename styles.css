@@ -7,6 +7,7 @@ body {
  color: #333;
  text-align: left;
 }
+
 /* ENCABEZADO */
 header {
  background-color: #2c3e50;
@@ -19,6 +20,7 @@ header h1 {
  margin: 0;
  font-size: 24px;
 }
+
 /* Botón de volver */
 #volver {
  position: absolute;
@@ -37,6 +39,7 @@ header h1 {
  background-color: #2c3e50;
  color: white;
 }
+
 /* Contenido principal */
 main {
  padding: 10px;
@@ -50,10 +53,12 @@ h2 {
 #contenido {
  padding: 10px;
 }
+
 /* Estilos para cada canción */
 .cancion {
  margin-bottom: 10px;
 }
+
 /* Encabezado de la canción */
 .encabezado {
  margin-bottom: 5px;
@@ -69,6 +74,7 @@ h2 {
  margin: 3px 0;
  font-weight: bold; /* ✅ Negrita para Tono, Ritmo, BPM, Compás */
 }
+
 /* Estilo para las estrofas */
 .estrofa {
  margin-top: 25px; /* ✅ Mayor separación */
@@ -104,12 +110,14 @@ h2 {
 .guion {
  color: transparent;
 }
+
 /* Línea separadora */
 .linea-separadora {
  border: none;
  border-top: 1px dotted #2c3e50;
  margin: 15px 0;
 }
+
 /* Pie de página */
 footer {
  background-color: #333;
@@ -122,6 +130,7 @@ footer {
  font-size: 14px;
  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
 }
+
 /* Estilos para los botones del menú (Index) */
 #menu {
  display: flex;
@@ -150,11 +159,13 @@ footer {
  border: 2px solid #34495e;
  transform: scale(1.05);
 }
+
 /* Tamaño del número pequeño */
 .pequeno {
  font-size: 70%;
  vertical-align: super;
 }
+
 /* Estilos responsivos para móviles */
 @media (max-width: 600px) {
  header h1 {
@@ -188,14 +199,16 @@ footer {
    padding: 8px 0;
  }
 }
+
 /* ✅ Estilo monoespaciado para el índice */
 #indice li a {
  font-family: 'Courier New', Courier, monospace !important;
- font-size: 16px;
+ font-size: 10px;
  text-decoration: none;
  white-space: pre; /* Preserva espacios múltiples */
 }
-/* Estilo para el botón \"Volver al índice\" */
+
+/* Estilo para el botón "Volver al índice" */
 #volver-indice {
  padding: 12px 24px;
  font-size: 16px;
@@ -218,11 +231,12 @@ footer {
 
 /* ✅ Estilo sombreado para los títulos de ritmo */
 #indice h3 {
-  background: linear-gradient(to right, #f0f0f0, #e0e0e0);
-  padding: 8px 12px;
-  margin-top: 20px;
-  border-left: 4px solid #888;
-  font-weight: bold;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
+ background: linear-gradient(to right, #f0f0f0, #e0e0e0);
+ padding: 8px 12px;
+ margin-top: 20px;
+ border-left: 4px solid #888;
+ font-weight: bold;
+ box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+ border-radius: 4px;
+ font-size: 14px;
 }
