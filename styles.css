@@ -203,7 +203,7 @@ footer {
 /* ✅ Estilo monoespaciado para el índice */
 #indice li a {
  font-family: 'Courier New', Courier, monospace !important;
- font-size: 10px;
+ font-size: 13px;
  text-decoration: none;
  white-space: pre; /* Preserva espacios múltiples */
 }
@@ -240,3 +240,32 @@ footer {
  border-radius: 4px;
  font-size: 14px;
 }
+
+/* ✅ Eliminar viñetas del índice */
+#indice li {
+ list-style-type: none;
+ margin-left: 0;
+ padding-left: 0;
+}
+
+
+/* Alignment adjustments for #indice */
+
+#indice {
+  padding-left: 0;
+}
+
+#indice h3 {
+  margin-left: 0;
+}
+
+#indice ul {
+  padding-left: 0;
+  margin-left: 0;
+  list-style-position: inside;
+}
+
+#indice li {
+  margin-left: 
+  padding-left: 0;
+
