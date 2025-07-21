@@ -1,11 +1,22 @@
+
 function prioridadCompas(compas) {
   if (compas === '6/8') return 0;
   if (compas === '3/4') return 1;
   return 2;
 }
 
-function ordenarClavesEspecial(claves) {
+function prioridadTono(tono) {
+  const orden = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const base = tono.trim().toUpperCase().replace('M', '');
+  const index = orden.indexOf(base);
+  return index === -1 ? orden.length : index;
+}
+
+function ordenarClavesEspecial(claves, criterio = '') {
   return claves.sort((a, b) => {
+    if (criterio === 'tono') {
+      return prioridadTono(a) - prioridadTono(b);
+    }
     const pa = prioridadCompas(a);
     const pb = prioridadCompas(b);
     if (pa !== pb) return pa - pb;
@@ -44,10 +55,12 @@ document.addEventListener('DOMContentLoaded', () => {
   window.generarIndice = function (criterio = 'nombre') {
     indice.innerHTML = '';
     const grupos = {};
+
     canciones.forEach(cancion => {
       const encabezado = cancion.querySelector('.encabezado');
       const titulo = cancion.dataset.titulo;
       const nombre = encabezado.querySelector('h3')?.textContent.trim() || titulo;
+
       const tonoText = Array.from(encabezado.querySelectorAll('p')).find(p => p.textContent.includes('Tono:'));
       const ritmoText = Array.from(encabezado.querySelectorAll('p')).find(p => p.textContent.includes('Ritmo:'));
       const bpmText = Array.from(encabezado.querySelectorAll('p')).find(p => p.textContent.includes('BPM:'));
@@ -56,18 +69,17 @@ document.addEventListener('DOMContentLoaded', () => {
       const tonoRaw = tonoText ? tonoText.textContent.replace('Tono:', '').trim() : 'SinTono';
       const tono = tonoRaw.length === 1 ? tonoRaw + ' ' : tonoRaw;
       const ritmo = ritmoText ? ritmoText.textContent.replace('Ritmo:', '').trim() : 'SinRitmo';
-      const ritmoAlineado = ritmo.padEnd(12, ' ');
       const bpm = bpmText ? bpmText.textContent.replace('BPM:', '').trim().padStart(3, '0') : '000';
       const compas = compasText ? compasText.textContent.replace('Compas:', '').trim() : 'SinCompás';
 
-      const nombreFormateado = `[${compas} | ${ritmoAlineado} | ${bpm}bpm | ${tono}] ${nombre.replace(/_/g, ' ')}`;
+      const nombreFormateado = `[${compas} ${ritmo.padEnd(8)} ${bpm}bpm ${tono}] ${nombre.replace(/_/g, ' ')}`;
       const clave = criterio === 'ritmo' ? ritmo : criterio === 'tono' ? tono : criterio === 'compas' ? compas : 'Todas';
 
       if (!grupos[clave]) grupos[clave] = [];
       grupos[clave].push({ titulo, nombre, tono, bpm, compas, ritmo, nombreFormateado });
     });
 
-    const clavesOrdenadas = ordenarClavesEspecial(Object.keys(grupos));
+    const clavesOrdenadas = ordenarClavesEspecial(Object.keys(grupos), criterio);
     clavesOrdenadas.forEach(clave => {
       const h3 = document.createElement('h3');
       h3.textContent = clave;
@@ -83,16 +95,13 @@ document.addEventListener('DOMContentLoaded', () => {
           const pa = prioridadCompas(a.compas);
           const pb = prioridadCompas(b.compas);
           if (pa !== pb) return pa - pb;
-
           const ritmoA = a.ritmo.toLowerCase();
           const ritmoB = b.ritmo.toLowerCase();
           if (ritmoA !== ritmoB) return ritmoA.localeCompare(ritmoB);
-
           const bpmA = parseInt(a.bpm.replace(/\D/g, '')) || 0;
           const bpmB = parseInt(b.bpm.replace(/\D/g, '')) || 0;
           if (bpmA !== bpmB) return bpmA - bpmB;
-
-          return a.tono.localeCompare(b.tono);
+          return prioridadTono(a.tono) - prioridadTono(b.tono);
         });
       }
 
@@ -190,5 +199,5 @@ document.addEventListener('DOMContentLoaded', () => {
     cancion.style.display = 'none';
   });
 
-  generarIndice('nombre'); // Carga inicial ordenada por nombre
+  generarIndice('nombre');
 });
