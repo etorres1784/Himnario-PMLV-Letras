@@ -3,6 +3,7 @@ function prioridadCompas(compas) {
   if (compas === '3/4') return 1;
   return 2;
 }
+
 function ordenarClavesEspecial(claves) {
   return claves.sort((a, b) => {
     const pa = prioridadCompas(a);
@@ -17,10 +18,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const indice = document.getElementById('indice');
   const buscador = document.getElementById('buscador');
   const borrar = document.getElementById('borrar');
+
   const volverBtn = document.createElement('button');
   volverBtn.textContent = '⬅️ Volver al índice';
   volverBtn.id = 'volver-indice';
   volverBtn.style.display = 'none';
+
   const contenedorVolver = document.createElement('div');
   contenedorVolver.style.textAlign = 'center';
   contenedorVolver.appendChild(volverBtn);
@@ -49,14 +52,17 @@ document.addEventListener('DOMContentLoaded', () => {
       const ritmoText = Array.from(encabezado.querySelectorAll('p')).find(p => p.textContent.includes('Ritmo:'));
       const bpmText = Array.from(encabezado.querySelectorAll('p')).find(p => p.textContent.includes('BPM:'));
       const compasText = Array.from(encabezado.querySelectorAll('p')).find(p => p.textContent.includes('Compas:'));
+
       const tonoRaw = tonoText ? tonoText.textContent.replace('Tono:', '').trim() : 'SinTono';
       const tono = tonoRaw.length === 1 ? tonoRaw + ' ' : tonoRaw;
       const ritmo = ritmoText ? ritmoText.textContent.replace('Ritmo:', '').trim() : 'SinRitmo';
       const ritmoAlineado = ritmo.padEnd(10, ' ');
       const bpm = bpmText ? bpmText.textContent.replace('BPM:', '').trim().padStart(3, '0') : '';
       const compas = compasText ? compasText.textContent.replace('Compas:', '').trim() : '';
+
       const nombreFormateado = `[ ${compas} ${ritmoAlineado} ${tono} ${bpm}bpm] ${nombre.replace(/_/g, ' ')}`;
       const clave = criterio === 'ritmo' ? ritmo : criterio === 'tono' ? tono : criterio === 'compas' ? compas : 'Todas';
+
       if (!grupos[clave]) grupos[clave] = [];
       grupos[clave].push({ titulo, nombre: nombre.replace(/_/g, ' '), tono, bpm, compas, ritmo, nombreFormateado });
     });
@@ -66,16 +72,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const h3 = document.createElement('h3');
       h3.textContent = clave;
       indice.appendChild(h3);
+
       const ul = document.createElement('ul');
-      let cancionesOrdenadas = grupos[clave];
-      cancionesOrdenadas = cancionesOrdenadas.sort((a, b) => {
-        const pa = prioridadCompas(a.compas);
-        const pb = prioridadCompas(b.compas);
-        if (pa !== pb) return pa - pb;
-        if (a.compas !== b.compas) return a.compas.localeCompare(b.compas);
-        if (a.tono !== b.tono) return a.tono.localeCompare(b.tono);
-        return parseInt(a.bpm.replace(/\\D/g, '')) - parseInt(b.bpm.replace(/\\D/g, ''));
-      });
+      let cancionesOrdenadas = grupos[clave].sort((a, b) => a.nombre.localeCompare(b.nombre));
+
       cancionesOrdenadas.forEach(cancion => {
         const li = document.createElement('li');
         const enlace = document.createElement('a');
@@ -88,6 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
         li.appendChild(enlace);
         ul.appendChild(li);
       });
+
       indice.appendChild(ul);
     });
   };
@@ -100,11 +101,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const coincide = titulo.includes(texto) || letra.includes(texto);
       cancion.style.display = coincide ? 'block' : 'none';
     });
+
     const entradasIndice = indice.querySelectorAll('li');
     entradasIndice.forEach(li => {
       const textoEnlace = li.textContent.toLowerCase();
       li.style.display = textoEnlace.includes(texto) ? 'list-item' : 'none';
     });
+
     const ritmos = indice.querySelectorAll('h3');
     ritmos.forEach(h3 => {
       let siguiente = h3.nextElementSibling;
@@ -128,6 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
     buscador.style.display = 'none';
     borrar.style.display = 'none';
     volverBtn.style.display = 'inline-block';
+    document.getElementById('opciones-orden').style.display = 'none';
   }
 
   borrar.addEventListener('click', () => {
@@ -139,6 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
     buscador.style.display = 'inline-block';
     borrar.style.display = 'inline-block';
     volverBtn.style.display = 'none';
+    document.getElementById('opciones-orden').style.display = 'block';
     const entradasIndice = indice.querySelectorAll('li, h3, ul');
     entradasIndice.forEach(el => {
       el.style.display = 'block';
@@ -154,6 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
     buscador.style.display = 'inline-block';
     borrar.style.display = 'inline-block';
     volverBtn.style.display = 'none';
+    document.getElementById('opciones-orden').style.display = 'block';
     const entradasIndice = indice.querySelectorAll('li, h3, ul');
     entradasIndice.forEach(el => {
       el.style.display = 'block';
@@ -164,5 +170,5 @@ document.addEventListener('DOMContentLoaded', () => {
     cancion.style.display = 'none';
   });
 
-  generarIndice('nombre'); // Carga inicial ordenada por nombre
+  generarIndice('nombre'); // 👈 Carga inicial ordenada por nombre
 });
