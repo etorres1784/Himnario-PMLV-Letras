@@ -56,15 +56,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const tonoRaw = tonoText ? tonoText.textContent.replace('Tono:', '').trim() : 'SinTono';
       const tono = tonoRaw.length === 1 ? tonoRaw + ' ' : tonoRaw;
       const ritmo = ritmoText ? ritmoText.textContent.replace('Ritmo:', '').trim() : 'SinRitmo';
-      const ritmoAlineado = ritmo.padEnd(10, ' ');
-      const bpm = bpmText ? bpmText.textContent.replace('BPM:', '').trim().padStart(3, '0') : '';
-      const compas = compasText ? compasText.textContent.replace('Compas:', '').trim() : '';
+      const ritmoAlineado = ritmo.padEnd(12, ' ');
+      const bpm = bpmText ? bpmText.textContent.replace('BPM:', '').trim().padStart(3, '0') : '000';
+      const compas = compasText ? compasText.textContent.replace('Compas:', '').trim() : 'SinCompás';
 
-      const nombreFormateado = `[ ${compas} ${ritmoAlineado} ${tono} ${bpm}bpm] ${nombre.replace(/_/g, ' ')}`;
+      const nombreFormateado = `[${compas} | ${ritmoAlineado} | ${bpm}bpm | ${tono}] ${nombre.replace(/_/g, ' ')}`;
       const clave = criterio === 'ritmo' ? ritmo : criterio === 'tono' ? tono : criterio === 'compas' ? compas : 'Todas';
 
       if (!grupos[clave]) grupos[clave] = [];
-      grupos[clave].push({ titulo, nombre: nombre.replace(/_/g, ' '), tono, bpm, compas, ritmo, nombreFormateado });
+      grupos[clave].push({ titulo, nombre, tono, bpm, compas, ritmo, nombreFormateado });
     });
 
     const clavesOrdenadas = ordenarClavesEspecial(Object.keys(grupos));
@@ -74,7 +74,27 @@ document.addEventListener('DOMContentLoaded', () => {
       indice.appendChild(h3);
 
       const ul = document.createElement('ul');
-      let cancionesOrdenadas = grupos[clave].sort((a, b) => a.nombre.localeCompare(b.nombre));
+      let cancionesOrdenadas = grupos[clave];
+
+      if (criterio === 'nombre') {
+        cancionesOrdenadas.sort((a, b) => a.nombre.localeCompare(b.nombre));
+      } else {
+        cancionesOrdenadas.sort((a, b) => {
+          const pa = prioridadCompas(a.compas);
+          const pb = prioridadCompas(b.compas);
+          if (pa !== pb) return pa - pb;
+
+          const ritmoA = a.ritmo.toLowerCase();
+          const ritmoB = b.ritmo.toLowerCase();
+          if (ritmoA !== ritmoB) return ritmoA.localeCompare(ritmoB);
+
+          const bpmA = parseInt(a.bpm.replace(/\D/g, '')) || 0;
+          const bpmB = parseInt(b.bpm.replace(/\D/g, '')) || 0;
+          if (bpmA !== bpmB) return bpmA - bpmB;
+
+          return a.tono.localeCompare(b.tono);
+        });
+      }
 
       cancionesOrdenadas.forEach(cancion => {
         const li = document.createElement('li');
@@ -170,5 +190,5 @@ document.addEventListener('DOMContentLoaded', () => {
     cancion.style.display = 'none';
   });
 
-  generarIndice('nombre'); // 👈 Carga inicial ordenada por nombre
+  generarIndice('nombre'); // Carga inicial ordenada por nombre
 });
