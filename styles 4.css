@@ -302,3 +302,43 @@ footer {
 #opciones-orden button:hover {
   background-color: #34495e;
 }
+
+/* 📱 Ajustes responsivos para botones y buscador */
+@media (max-width: 600px) {
+  #opciones-orden {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px;
+  }
+
+  #opciones-orden button {
+    flex: 1 1 auto;
+    min-width: 120px;
+    padding: 10px;
+    font-size: 13px;
+  }
+
+  #buscador {
+    width: 90%;
+    max-width: 400px;
+    margin: 10px auto;
+    display: block;
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  #borrar {
+    display: block;
+    margin: 0 auto 20px auto;
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+
+  #volver-indice {
+    margin: 10px auto;
+    padding: 10px 20px;
+    font-size: 13px;
+  }
+}
