@@ -49,10 +49,19 @@ document.addEventListener('DOMContentLoaded', () => {
     <button onclick="generarIndice('ritmo')">🎵 Agrupar por Ritmo</button>
     <button onclick="generarIndice('tono')">🎼 Agrupar por Tono</button>
     <button onclick="generarIndice('nombre')">🔤 Ordenar por Nombre</button>
+<button onclick="generarIndice('disco')">💿 Agrupar por Disco</button>
   `;
   indice.parentNode.insertBefore(opcionesOrden, indice);
 
   window.generarIndice = function (criterio = 'nombre') {
+
+    const obtenerNumeroPista = (discoText) => {
+        if (discoText.length < 2) return 9999;
+        const pistaTexto = discoText[1].textContent.replace('Disco:', '').trim();
+        const match = pistaTexto.match(/\d+/);
+        return match ? parseInt(match[0], 10) : 9999;
+    };
+
     indice.innerHTML = '';
     const grupos = {};
 
@@ -65,6 +74,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const ritmoText = Array.from(encabezado.querySelectorAll('p')).find(p => p.textContent.includes('Ritmo:'));
       const bpmText = Array.from(encabezado.querySelectorAll('p')).find(p => p.textContent.includes('BPM:'));
       const compasText = Array.from(encabezado.querySelectorAll('p')).find(p => p.textContent.includes('Compas:'));
+const discoText = Array.from(encabezado.querySelectorAll('p')).filter(p => p.textContent.includes('Disco:'));
+const disco = (discoText.map(p => p.textContent.replace('Disco:', '').trim()).find(d => d !== '-') || 'SinDisco');
 
       const tonoRaw = tonoText ? tonoText.textContent.replace('Tono:', '').trim() : 'SinTono';
       const tono = tonoRaw.length === 1 ? tonoRaw + ' ' : tonoRaw;
@@ -73,10 +84,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const compas = compasText ? compasText.textContent.replace('Compas:', '').trim() : 'SinCompás';
 
       const nombreFormateado = `[${compas} ${ritmo.padEnd(8)} ${bpm}bpm ${tono}] ${nombre.replace(/_/g, ' ')}`;
-      const clave = criterio === 'ritmo' ? ritmo : criterio === 'tono' ? tono : criterio === 'compas' ? compas : 'Todas';
+      const clave = criterio === 'ritmo' ? ritmo : criterio === 'tono' ? tono : criterio === 'compas' ? compas : criterio === 'disco' ? disco : 'Todas';
 
       if (!grupos[clave]) grupos[clave] = [];
-      grupos[clave].push({ titulo, nombre, tono, bpm, compas, ritmo, nombreFormateado });
+      grupos[clave].push({
+ titulo, nombre, tono, bpm, compas, ritmo, disco, nombreFormateado ,
+numeroPista: criterio === 'disco' ? obtenerNumeroPista(discoText) : 9999
+});
     });
 
     const clavesOrdenadas = ordenarClavesEspecial(Object.keys(grupos), criterio);
@@ -92,6 +106,10 @@ document.addEventListener('DOMContentLoaded', () => {
         cancionesOrdenadas.sort((a, b) => a.nombre.localeCompare(b.nombre));
       } else {
         cancionesOrdenadas.sort((a, b) => {
+    if (criterio === 'disco') {
+        return a.numeroPista - b.numeroPista;
+    }
+
           const pa = prioridadCompas(a.compas);
           const pb = prioridadCompas(b.compas);
           if (pa !== pb) return pa - pb;
